@@ -7,8 +7,29 @@
 rm(list = ls()) 
 
 library(tidyverse)
-library(lme4)
 library(zoo)
+
+# input --------------------------------------------------------------------#
+
+season <- read.csv('data/season_table.csv')
+
+tmean <- read_csv('data/climate/Zachman_monthly_mean_temp.csv')
+ppt <- read_csv('data/climate/Zachman_ppt.csv')
+
+station_dat <- read.csv('data/USSES_climate_monthly_new.csv')
+
+# output --------------------------------------------------------------------#
+
+seasonal_output <- 'data/temp_data/seasonal_climate.RDS' # need this one for prepare climate coveriates script 
+
+monthly_output <- 'data/temp_data/monthly_climate.RDS' # used by plot modern climate 
+annual_output <- 'data/temp_data/annual_climate.RDS' # used by plot modern climate 
+
+quarterly_output <- 'data/temp_data/quarterly_climate.RDS' # don't need
+monthly_csv <- 'data/temp_data/monthly_climate.csv' # don't need this one 
+monthly_from_daily_csv <- 'data/temp_data/monthly_climate_from_daily.csv' # don't need this one 
+
+# --------------------------------------------------------------------#
 
 dm <- c(4, 11 ) # Drought months 
 im <- c(5, 10 ) # Irrigation months
@@ -23,29 +44,24 @@ p2 <- data.frame( Period = 'not monitored', year = 1958:2006)
 p3 <- data.frame( Period = 'Historical', year = 1925:1957)
 periods <- data.frame( rbind( p1, p2, p3 )) 
 
-# ----- read in data --------------------------------------------------------------------#
-data_dir <- 'data'
+# -------------------------------------------------------------------- # 
 
-old_climate_files <- dir(data_dir, pattern = 'Zachman', full.names = T) # Climate Data from Ecological Archives 
-old_station_dat <- lapply( old_climate_files, read.csv)
-
-old_station_dat[[1]] <- old_station_dat[[1]] %>% 
+tmean <- 
+  tmean %>% 
   dplyr::select( - ANNUAL) %>% 
   gather(Month_name, TAVG, JAN:DEC) %>% 
   mutate( TAVG = (TAVG - 32)*5/9) # convert to celsius 
 
-old_station_dat[[2]] <- old_station_dat[[2]] %>% 
+ppt <- 
+  ppt %>% 
   dplyr::select( - ANNUAL) %>% 
   gather(Month_name, PRCP, JAN:DEC) %>% 
   mutate( PRCP = PRCP*25.4)       # convert to mm 
 
 months <- data.frame( month = 1:12, Month_name = toupper( month.abb))
 
-old_station_dat <- merge( old_station_dat[[1]], old_station_dat[[2]], by = c('YEAR', 'Month_name'))
+old_station_dat <- merge( tmean, ppt, by = c('YEAR', 'Month_name'))
 old_station_dat <- merge( old_station_dat, months)
-
-station_dat <- read.csv('data/USSES_climate_monthly_new.csv')
-season <- read.csv('data/season_table.csv')
 
 # ---process dates----------------------------------------------------------------------#
 
@@ -216,12 +232,16 @@ monthly_from_daily <-
 plot(data = subset(seasonal_clim, var == 'TAVG_avg' & Treatment == 'Control' & season == 'summer'), val ~ year)
 plot(data = subset(seasonal_clim, var == 'TAVG_avg' & Treatment == 'Control' & season == 'fall'), val ~ year)
 
-saveRDS( seasonal_clim, 'data/temp_data/seasonal_climate.RDS')
-saveRDS( monthly_clim, 'data/temp_data/monthly_climate.RDS')
-saveRDS( quarterly_clim, 'data/temp_data/quarterly_climate.RDS')
-saveRDS( annual_clim, 'data/temp_data/annual_climate.RDS')
+saveRDS( seasonal_clim, file = seasonal_output)
+saveRDS( monthly_clim, file = monthly_output)
+saveRDS( quarterly_clim, file = quarterly_output)
+saveRDS( annual_clim, file = annual_output)
 
-write.csv(monthly_clim %>% arrange( year, month) %>% rename(TPPT = PRCP, TMEAN = TAVG), 'data/temp_data/monthly_climate.csv', row.names = FALSE)
+monthly_clim %>% 
+  arrange( year, month) %>% 
+  rename(TPPT = PRCP, TMEAN = TAVG) %>% 
+  write.csv(file = monthly_csv, row.names = FALSE)
 
-write.csv(monthly_from_daily, 'data/temp_data/monthly_climate_from_from_daily.csv', row.names = FALSE)
+monthly_from_daily %>% 
+  write.csv(file = monthly_from_daily_csv, row.names = FALSE)
 

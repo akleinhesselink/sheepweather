@@ -10,11 +10,11 @@ library(tidyverse)
 
 # input ---------------------------------------------------- # 
 
-q_info <- read.csv('data/quad_info.csv') 
+q_info <- read.csv('data-raw/quad_info.csv') 
 
-port_depth <- read.csv('data/sensor_positions.csv')
+port_depth <- read.csv('data-raw/sensor_positions.csv')
 
-folders <- dir('data/raw_decagon_data', pattern = '20[0-9]{2}_[1-2]$', full.names = TRUE)
+folders <- dir('data-raw/raw_decagon_data', pattern = '20[0-9]{2}_[1-2]$', full.names = TRUE)
   
 # output ---------------------------------------------------- # 
 

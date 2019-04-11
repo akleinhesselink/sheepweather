@@ -4,13 +4,13 @@ rm(list = ls())
 library( tidyverse) 
 
 # input ---------------------------------------------------- # 
+seasons <- read.csv('data/season_table.csv')
 
 daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS') 
-# comes from driversdata
-# produced by the merge decagon data with climate_station_data script 
-
-seasons <- read.csv('data/season_table.csv')
+  # comes from 'make_rainfall.R'
+  
 spotVWC <- readRDS('data/spring_spot_measurements.RDS')
+  # comes from 'process_spot_measurements.R'
 
 # output ---------------------------------------------------- # 
 

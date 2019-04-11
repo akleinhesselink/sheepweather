@@ -7,7 +7,7 @@ weather <- as.list( read_lines('data/usses_climate.txt') )
 
 # output -------------------------------------------------- #
 
-outfile <- 'data/weather.rda'
+outfile <- 'temp_data/weather.rda'
 
 # -------------------------------------------------- #
 

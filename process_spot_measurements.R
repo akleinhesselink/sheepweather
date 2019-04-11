@@ -40,9 +40,6 @@ df <- merge (df, q_info , by = 'plot')
 df$date <- as.POSIXct(df$date, tz = 'MST')
 df <- df %>% rename(VWC = PCT)
 
-
-# Save spot measurements -----------------------------------------------------------------------------------------------
-
 # test that it matches old data 
 old_df <- readRDS('data/spring_spot_measurements.RDS')
 

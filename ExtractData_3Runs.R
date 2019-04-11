@@ -29,7 +29,7 @@ library(Rsoilwat31) # Install from GitHub :
 # 
 # And that should work to get the package installed 
 
-outfile <- 'data/daily_VWC.csv'
+outfile <- 'temp_data/daily_VWC.csv'
 
 load("data/soilwat/sw_output.RData",verbose=T)
 

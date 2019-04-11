@@ -4,7 +4,7 @@ library( tidyverse )
 
 # input ---------------------------------------------------- # 
 
-df <- readRDS(file = 'processed_data/decagon_data.RDS')
+df <- readRDS(file = 'temp_data/decagon_data.RDS')
   # This comes from the import and format decagon data script 
 
 season <- read.csv('data/season_table.csv')
@@ -60,6 +60,8 @@ check <-
   arrange( new_date, f  ) 
 
 #-----------------------------------------------------------------------------------------
-write.csv(check, check_date_file, row.names = FALSE) # write list of changes 
+write.csv(check, 
+          check_date_file, 
+          row.names = FALSE) # write list of changes, this is then edited by hand
 
 save(df, season, tod, file = temp_outfile)

@@ -5,13 +5,13 @@ library(zoo) # for rollapply
 
 # input ---------------------------------------------------- # 
 
-df <- readRDS(file = 'processed_data/decagon_data_corrected_dates.RDS')
+df <- readRDS(file = 'temp_data/decagon_data_corrected_dates.RDS')
 
   # from the correct_decagon_dates script 
 
 # output ---------------------------------------------------- # 
 
-decagon_outfile <- 'data/processed_data/decagon_data_corrected_values.RDS'
+decagon_outfile <- 'temp_data/decagon_data_corrected_values.RDS'
   
 # ---------------------------------------------------------------------------------------
 
@@ -101,5 +101,18 @@ corrected <-
   filter( has_vals)
 
 corrected$depth <- factor(corrected$depth, labels = c('25 cm deep', '5 cm deep', 'air temperature'))   
+
+corrected <- 
+  corrected %>% 
+  filter( stat == 'raw', bad_values == 0 )
+
+corrected$depth_label <- factor( corrected$depth , levels = c('air temperature', '5 cm deep', '25 cm deep') , order = TRUE ) 
+corrected$Treatment_label <- factor(corrected$Treatment, levels = c('Drought', 'Control', 'Irrigation'), order = TRUE)
+
+corrected <- 
+  corrected %>% 
+  mutate ( unique_position = paste0( plot, '.', position))
+
+corrected$datetime <- corrected$new_date
 
 saveRDS(corrected, decagon_outfile )

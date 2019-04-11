@@ -3,24 +3,28 @@
 # Make STAN datalist  
 #
 #####################################################################################
-
+#
+# This gets outsourced to new project 
+#
 # These retrieve and aggregate all the climate data 
-
+#
 # This depends on soilwat data sent by Caitlin Andrews -------------- # 
+#
+# # Depends Rsoilwat31 
+# source('ExtractData_3Runs.R') # don't run
+# 
+# # don't run this unless you can install Rsoilwat31, an old version of
+# # the soilwat package. 
+# # Instructions for installing the version are given in the script.  
+# # ------------------------------------------------------------------ #
+# source('make_climate_variables.R') 
+# source('process_spot_measurements.R')
+# source('aggregate_spot_VWC.R')
+# 
 
-# Depends Rsoilwat31 
-#source('ExtractData_3Runs.R') # don't run
 
-# don't run this unless you can install Rsoilwat31, an old version of
-# the soilwat package. 
-# Instructions for installing the version are given in the script.  
-# ------------------------------------------------------------------ #
-
-source('plot_spring_soil_moisture_spot_measures.R')
-source('code/prepare_data/climate/aggregate_spot_VWC.R')
 source('code/prepare_data/climate/soilMoistureTreatmentEffects.R')
 source('code/prepare_data/climate/aggregate_VWC_data.R')
-source('code/prepare_data/climate/make_climate_variables.R') 
 source('code/prepare_data/climate/prepare_climate_covariates.R')
 
 # ----------------------------------------------------------------- 

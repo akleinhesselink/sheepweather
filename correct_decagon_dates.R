@@ -10,7 +10,7 @@ check <- read_csv('data/check_dates_modified.csv')
 
 # output ---------------------------------------------------- # 
 
-outfile <- 'processed_data/decagon_data_corrected_dates.RDS'
+outfile <- 'temp_data/decagon_data_corrected_dates.RDS'
 
 #  ---------------------------------------------------- # 
 

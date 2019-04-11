@@ -15,11 +15,10 @@ q_info <- read.csv('data/quad_info.csv')
 port_depth <- read.csv('data/sensor_positions.csv')
 
 folders <- dir('data/raw_decagon_data', pattern = '20[0-9]{2}_[1-2]$', full.names = TRUE)
-  # raw decagon data files 
-
+  
 # output ---------------------------------------------------- # 
 
-outfile <- 'processed_data/decagon_data.RDS'
+outfile <- 'temp_data/decagon_data.RDS'
 
 #---------------------------------------------------------------------------
 

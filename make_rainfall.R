@@ -5,14 +5,14 @@ library(zoo) # for rollapply
 
 # input ---------------------------------------------------- # 
 
-load('data/weather.rda')
+load('temp_data/weather.rda')
 
 # originally this used the "USSES_climate.csv" file but I don't know 
 # where this is from and it is less complete than the weather.rda file 
 
 # output ---------------------------------------------------- # 
 
-rainfall_outfile <- 'processed_data/daily_station_dat_rainfall.RDS'
+rainfall_outfile <- 'temp_data/daily_station_dat_rainfall.RDS'
 
 # ---------------------------------------------------------------------------------------
 
@@ -39,8 +39,8 @@ weather <-
   mutate( prerain = ifelse( prerain == 'rainy' & rainfall == 'not rainy', TRUE, FALSE)) %>%
   arrange( date) %>% 
   mutate( prcp_event = factor( cumsum ( prerain ) )) %>% 
-  group_by( prcp_event, prerain) %>% 
-  mutate( total_rain = cumsum(PRCP) )
+  group_by( prcp_event, prerain) %>%
+  mutate( total_rain = cumsum(ifelse(is.na(PRCP), 0, PRCP) ))
 
 weather <- 
   weather %>% 
@@ -49,6 +49,6 @@ weather <-
   mutate( year = strftime( simple_date, '%Y', tz = 'MST')) %>%  
   group_by( year ) %>% 
   arrange( year, simple_date ) %>% 
-  mutate( ann_cum_PRCP = cumsum(PRCP))
+  mutate( ann_cum_PRCP = ifelse(is.na(PRCP), 0, PRCP))
 
 saveRDS(weather, rainfall_outfile )

@@ -10,6 +10,8 @@ data_readme_url <- "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt"
 data_file <- 'data/usses_climate.txt'
 readme_file <- 'data/climate_readme.txt'
 
+#  -------------------------------------------------- #
+
 exists <- all( file.exists(c(data_file, readme_file)) )
 
 if( exists ){

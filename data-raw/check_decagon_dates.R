@@ -7,8 +7,8 @@ library( tidyverse )
 df <- readRDS(file = 'temp_data/decagon_data.RDS')
   # This comes from the import and format decagon data script 
 
-season <- read.csv('data/season_table.csv')
-tod <- read.csv('data/tod_table.csv')
+season <- read.csv('data-raw/season_table.csv')
+tod <- read.csv('data-raw/tod_table.csv')
 
 # output ---------------------------------------------------- # 
 

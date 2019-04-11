@@ -6,13 +6,13 @@ library(tidyverse)
 
 # input ---------------------------------------------------- # 
 
-q_info <-read.csv('data/quad_info.csv')
+q_info <-read.csv('data-raw/quad_info.csv')
 
-p1 <- read.csv('data/spot_measures/2012-06-06_spot_measurements.csv', skip = 3)
-p2 <- read.csv('data/spot_measures/2015-04-29_spot_measurements.csv', skip = 2)
-p3 <- read.csv('data/spot_measures/2015-05-07_spot_measurements.csv')
-p4 <- read.csv('data/spot_measures/2016-05-10_spot_measurements.csv')
-p5 <- read.csv('data/spot_measures/2015-06-09_spot_measurements.csv')
+p1 <- read.csv('data-raw/spot_measures/2012-06-06_spot_measurements.csv', skip = 3)
+p2 <- read.csv('data-raw/spot_measures/2015-04-29_spot_measurements.csv', skip = 2)
+p3 <- read.csv('data-raw/spot_measures/2015-05-07_spot_measurements.csv')
+p4 <- read.csv('data-raw/spot_measures/2016-05-10_spot_measurements.csv')
+p5 <- read.csv('data-raw/spot_measures/2015-06-09_spot_measurements.csv')
 
 # output ---------------------------------------------------- # 
 

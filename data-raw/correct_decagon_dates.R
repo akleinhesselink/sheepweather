@@ -6,7 +6,7 @@ library( tidyverse )
 
 load('temp_data/temp_check_decagon_dates.rda')
 
-check <- read_csv('data/check_dates_modified.csv')
+check <- read_csv('data-raw/check_dates_modified.csv')
 
 # output ---------------------------------------------------- # 
 

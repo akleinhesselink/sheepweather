@@ -15,7 +15,7 @@ source('data-raw/export_climate_station_data_for_SOILWAT.R')
 
 # read daily soilwat data and save to csv file  
 # NOTE requires Rsoilwat31 package 
-source('ExtractData_3Runs.R') # generate daily_VWC.csv
+source('data-raw/ExtractData_3Runs.R') # generate daily_VWC.csv
 
 
 

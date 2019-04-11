@@ -29,9 +29,9 @@ library(Rsoilwat31) # Install from GitHub :
 # 
 # And that should work to get the package installed 
 
-outfile <- 'temp_data/daily_VWC.csv'
+load("data-raw/soilwat/sw_output.RData",verbose=T)
 
-load("data/soilwat/sw_output.RData",verbose=T)
+outfile <- 'temp_data/daily_VWC.csv'
 
 # NOTE from Caitlin Andrews: 
 # This is a R script on how to extract data from the 3_Runs Folder

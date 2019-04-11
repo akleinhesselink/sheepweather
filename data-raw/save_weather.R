@@ -3,7 +3,7 @@ library(tidyverse)
 
 # input --------------------------------------------------- #
 
-weather <- as.list( read_lines('data/usses_climate.txt') )
+weather <- as.list( read_lines('data-raw/usses_climate.txt') )
 
 # output -------------------------------------------------- #
 

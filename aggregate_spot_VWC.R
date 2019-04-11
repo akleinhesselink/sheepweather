@@ -5,7 +5,10 @@ library( tidyverse)
 
 # input ---------------------------------------------------- # 
 
-daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS')
+daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS') 
+# comes from driversdata
+# produced by the merge decagon data with climate_station_data script 
+
 seasons <- read.csv('data/season_table.csv')
 spotVWC <- readRDS('data/spring_spot_measurements.RDS')
 

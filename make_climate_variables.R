@@ -7,16 +7,10 @@
 rm(list = ls()) 
 
 library(tidyverse)
-library(zoo)
 
 # input --------------------------------------------------------------------#
 
 season <- read.csv('data/season_table.csv')
-
-tmean <- read_csv('data/climate/Zachman_monthly_mean_temp.csv')
-ppt <- read_csv('data/climate/Zachman_ppt.csv')
-
-station_dat <- read_csv('data/USSES_climate_monthly_new.csv')
 
 load('data/weather.rda')
 
@@ -52,31 +46,6 @@ monthly <-
   mutate( YEAR = as.numeric(strftime(date, '%Y', tz = 'MST'))) %>% 
   group_by(YEAR, MONTH) %>% 
   summarise( PRCP = sum(PRCP, na.rm = T), TAVG = mean(tmean, na.rm = T))
-
-tmean <- 
-  tmean %>% 
-  dplyr::select( - ANNUAL) %>% 
-  gather(Month_name, TAVG, JAN:DEC) %>% 
-  mutate( TAVG = (TAVG - 32)*5/9) # convert to celsius 
-
-ppt <- 
-  ppt %>% 
-  dplyr::select( - ANNUAL) %>% 
-  gather(Month_name, PRCP, JAN:DEC) %>% 
-  mutate( PRCP = PRCP*25.4)       # convert to mm 
-
-months <- data.frame( MONTH = 1:12, Month_name = toupper( month.abb))
-
-old_station_dat <- merge( tmean, ppt, by = c('YEAR', 'Month_name'))
-old_station_dat <- merge( old_station_dat, months)
-
-compare_monthly <- 
-  old_station_dat %>% 
-  left_join(monthly, by = c('YEAR', 'MONTH')) %>% 
-  arrange( YEAR, MONTH) 
-
-plot(compare_monthly$TAVG.x, compare_monthly$TAVG.y)
-plot(compare_monthly$PRCP.x, compare_monthly$PRCP.y)
 
 #
 

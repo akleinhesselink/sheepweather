@@ -1,9 +1,5 @@
-#This is a R script on how to extract data from the 3_Runs Folder
-#The 3_Runs folder holds numerous subfolders - one for each site
-#In each site subfolder there should be two files - sw_input.RData and sw_output.RData
-#The sw_input file is all the input files that were given to the model
-#The sw_output file is all the daily raw data. Includes water balance components (i.e. transpiration, evaporation) and water output (volumetric water content and soil water potential)
-#### BEWARE - there are empty or defenct 'slots'. Do not be alarmed
+rm(list = ls())
+
 library(DBI)
 library(RSQLite)
 library(Rsoilwat31) # Install from GitHub : 
@@ -33,23 +29,17 @@ library(Rsoilwat31) # Install from GitHub :
 # 
 # And that should work to get the package installed 
 
+outfile <- 'data/daily_VWC.csv'
 
-#Step 1 - Set working directory
-dir.prj <- "data/SW_files/"
+load("data/soilwat/sw_output.RData",verbose=T)
 
-#Step 2- load and save files
-#Input
-#load(file.path('~/Desktop/Results2/1_SheepStation_SheepStation1', "sw_input.RData"),verbose=TRUE)
-#swInput<-swRunScenariosData[[1]]
-#swInput@soils
-
-#Structure of Data
-#Input
-# slotNames(swInput)
-# swInput@cloud
-
-#Output
-load(file.path(dir.prj,"sw_output.RData"),verbose=T)
+# NOTE from Caitlin Andrews: 
+# This is a R script on how to extract data from the 3_Runs Folder
+# The 3_Runs folder holds numerous subfolders - one for each site
+# In each site subfolder there should be two files - sw_input.RData and sw_output.RData
+# The sw_input file is all the input files that were given to the model
+# The sw_output file is all the daily raw data. Includes water balance components (i.e. transpiration, evaporation) and water output (volumetric water content and soil water potential)
+#### BEWARE - there are empty or defenct 'slots'. Do not be alarmed
 
 #NOTE - the number (X) in the runData object (so runData[[X]]) refers to different scenario ids
 #So for example extracting runData[[1]] grabs the current scenario data
@@ -66,10 +56,9 @@ swOutputCurrent <- runData[[1]]
 #slotNames(swOutputFuture)
 # str(swOutputFuture@VWCMATRIC)
 # str(swOutputFuture@VWCMATRIC@Day)
-# 
-
+ 
 VWC <-data.frame(swOutputCurrent@VWCMATRIC@Day)
 
 VWC <- subset(VWC, !(Year == 2016 & DOY >= 270))
 
-write.csv(VWC, 'data/daily_VWC.csv', row.names = FALSE)
+write.csv(VWC, outfile, row.names = FALSE)

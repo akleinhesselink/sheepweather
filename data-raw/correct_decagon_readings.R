@@ -75,16 +75,16 @@ corrected <-
 corrected$bad_window <- as.numeric(corrected$bad_window)
 
 corrected <- corrected %>%
-  mutate(bad_window = ifelse( plot == '7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > strptime( '2015-07-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 1 & position == '5W' & measure == 'VWC' , 1, bad_window)) %>%
-  mutate(bad_window = ifelse( plot == '1_2_C' & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 15 & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 15 & position == 'air' & measure == 'C' & new_date > strptime( '2016-02-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 2 & position == '25E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 8 & position == 'air' & measure == 'C' & new_date > strptime( '2016-03-01', format = '%Y-%m-%d') & new_date < strptime( '2016-05-10', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 7 & position == '5W' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == '7_8_C' & position == '5W' & measure == 'VWC' & stat == 'value' & v < -0.01 , 1, bad_window )) %>%
-  mutate(bad_window = ifelse( plot == '7_8_C' &
+  mutate(bad_window = ifelse( plot == 'X7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > strptime( '2015-07-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X1' & position == '5W' & measure == 'VWC' , 1, bad_window)) %>%
+  mutate(bad_window = ifelse( plot == 'X1_2_C' & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X15' & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X15' & position == 'air' & measure == 'C' & new_date > strptime( '2016-02-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X2' & position == '25E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X8' & position == 'air' & measure == 'C' & new_date > strptime( '2016-03-01', format = '%Y-%m-%d') & new_date < strptime( '2016-05-10', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X7' & position == '5W' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X7_8_C' & position == '5W' & measure == 'VWC' & stat == 'value' & v < -0.01 , 1, bad_window )) %>%
+  mutate(bad_window = ifelse( plot == 'X7_8_C' &
                                 position == 'air' &
                                 measure == 'C' &
                                 new_date > strptime( '2013-03-01', format = '%Y-%m-%d') &
@@ -108,7 +108,7 @@ corrected <-
           good_date == 1,
           !is.na(v)) %>%
   rename( 'datetime' = new_date) %>%
-  select(simple_date, datetime, id, quad, plot, Treatment, port, position, depth, measure, stat, v)
+  select(simple_date, datetime, id, plot, PrecipGroup, Treatment, port, position, depth, measure, stat, v)
 
 
 saveRDS(corrected, outfile)

@@ -4,26 +4,34 @@ rm(list = ls())
 
 library(tidyverse)
 library(lme4)
-library(zoo)
 library(MASS)
-library(emmeans)
+library(lsmeans)
 library(texreg)
 library(xtable)
 
-swVWC <- read.csv('data/daily_VWC.csv')                       # soilwat output 
-spotVWC <- readRDS('data/temp_data/spotVWC.RDS')              # spot check soil moisture
+# input ---------------------------------------------------- #
 
-myVWC <- readRDS('data/decagon_data_with_station_data.RDS')   # cleaned decagon data 
-daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS')  # climate station rainfall
+load('data/my_plotting_theme.Rdata')
 
-seasons <- read.csv('data/season_table.csv')
+swVWC <- read.csv('temp_data/daily_VWC.csv')                  # soilwat output
+spotVWC <- readRDS('temp_data/spotVWC.RDS')                  # spot check soil moisture
+
+myVWC <- readRDS('temp_data/decagon_data_with_station_data.RDS')   # cleaned decagon data
+daily_clim <- readRDS('temp_data/daily_station_dat_rainfall.RDS')  # climate station rainfall
+
+seasons <- read.csv('data-raw/season_table.csv')
+quads <- read_csv('data-raw/quad_info.csv')
+
+# output ---------------------------------------------------- #
+
+
+daily_swVWC_treatment_outfile <- 'data/temp_data/daily_swVWC_treatments.RDS'
 
 # --------------------------------------------------------------------------------------#
-myVWC <- myVWC %>%
-  mutate(v = ifelse(measure == 'VWC', v * 100, v)) # convert to percent
-
-myVWC$year <-
-  as.numeric(strftime(as.Date(myVWC$simple_date), '%Y'))
+myVWC <-
+  myVWC %>%
+  mutate(v = ifelse(measure == 'VWC', v * 100, v)) %>%  # convert to percent
+  mutate( year = as.numeric(strftime(as.Date(simple_date), '%Y')))
 
 # Steps for treatment effects standardization:
 # 1. aggregate soil moisture by PrecipGroup, Treatment, depth and date
@@ -32,19 +40,23 @@ myVWC$year <-
 #       standardized treatment effects.
 # 4. output
 
-VWC_weights <-
+myVWC <-
   myVWC %>%
-  filter(bad_values == 0 , stat == 'raw', measure == 'VWC') %>%
+  filter(measure == 'VWC') %>%
   filter(!is.na(rainfall)) %>%
-  filter(!(plot == 16)) %>%           ##### Drop plot 16
-  group_by(year, PrecipGroup, simple_date) %>%
-  summarise(weight = n_distinct(unique_position))
+  filter(!(plot == 'X16')) # drop plot 16
 
 myVWC <-
   myVWC %>%
-  filter(bad_values == 0 , stat == 'raw', measure == 'VWC') %>%
-  filter(!is.na(rainfall)) %>%
-  filter(!(plot == 16)) # drop plot 16
+  ungroup() %>%
+  mutate( unique_position = paste0(plot, '.', position)) %>%
+  mutate( month = as.numeric(strftime(simple_date, '%m', tz = 'MST'))) %>%
+  left_join(seasons, by = 'month')
+
+VWC_weights <-
+  myVWC %>%
+  group_by(year, PrecipGroup, simple_date) %>%
+  summarise(weight = n_distinct(unique_position))
 
 df_soil_moist <-
   myVWC %>%
@@ -97,21 +109,18 @@ mTreatment <-
 
 summary(mTreatment)
 
-
 test <- lsmeans(mTreatment,  ~ Treatment + season + rainfall)
 #test <- lsm(mTreatment, ~ Treatment + season + rainfall )
 
 
 tab <- summary(test)
-
 tab <-  data.frame(tab)
-
 tab <-
   tab %>%
   dplyr::select(season, rainfall,  Treatment, lsmean, SE, asymp.LCL, asymp.UCL) %>%
   arrange(season, rainfall, Treatment)
 
-statsOutput <- 'manuscript/soil_moisture_model.tex'
+statsOutput <- 'tables/soil_moisture_model.tex'
 
 texreg(
   mTreatment,
@@ -154,35 +163,35 @@ daily_VWC %>%
           ip = (Irrigation - Control) / Control) %>% filter(stat == 'avg')
 
 daily_control <-
-  daily_VWC %>% 
-  filter(Treatment == 'Control') %>% 
-  mutate(v = as.numeric(scale(v))) %>% 
+  daily_VWC %>%
+  filter(Treatment == 'Control') %>%
+  mutate(v = as.numeric(scale(v))) %>%
   spread(Treatment, v)
 
 daily_VWC2 <-
-  daily_VWC %>% 
-  filter(Treatment == 'Control') %>% 
+  daily_VWC %>%
+  filter(Treatment == 'Control') %>%
   spread(Treatment, v)
 
 pred_df <-
-  daily_VWC %>% 
-  filter(Treatment != 'Control') %>% 
+  daily_VWC %>%
+  filter(Treatment != 'Control') %>%
   dplyr::select(-v)
 
-pred_df$predicted <- 
+pred_df$predicted <-
   predict(mTreatment, pred_df, re.form = NA)
 
-pred_df <- 
-  pred_df %>% 
+pred_df <-
+  pred_df %>%
   spread(Treatment, predicted)
 
 pred_df <-
-  merge(pred_df, daily_control)  %>% 
-  mutate(Drought = Drought + Control, Irrigation = Irrigation + Control)  %>% 
+  merge(pred_df, daily_control)  %>%
+  mutate(Drought = Drought + Control, Irrigation = Irrigation + Control)  %>%
   gather(Treatment, predicted, Drought:Control)
 
-observed_df  <- 
-  daily_VWC %>% 
+observed_df  <-
+  daily_VWC %>%
   rename(observed = v)
 
 plot_df <- merge(pred_df, observed_df)
@@ -194,10 +203,10 @@ plot_df <-
 head(plot_df)
 
 plot_df <-
-  plot_df %>% 
-  dplyr::select(-predicted) %>% 
-  distinct() %>% 
-  rename(predicted = back_scaled_pred)  %>% 
+  plot_df %>%
+  dplyr::select(-predicted) %>%
+  distinct() %>%
+  rename(predicted = back_scaled_pred)  %>%
   gather(type, VWC, predicted , observed)
 
 everyday <-
@@ -213,7 +222,6 @@ plot_df <-
   plot_df %>% mutate(julian_date = as.numeric(strftime(simple_date, '%j')),
                      year = as.numeric(strftime(simple_date, '%Y')))
 
-load('code/figure_scripts/my_plotting_theme.Rdata')
 
 subset(plot_df, type != 'predicted')
 
@@ -304,6 +312,7 @@ head(daily_VWC2)
 
 soilWAT <-
   swVWC %>% dplyr::select(simple_date, modelVWC, year, season, rainfall)
+
 soilWAT$SW_predicted <- soilWAT$modelVWC
 daily_VWC2$observed <- daily_VWC2$Control
 
@@ -311,12 +320,13 @@ obs_predicted <-
   merge(daily_VWC2,
         soilWAT,
         by = c('simple_date', 'year', 'season', 'rainfall'))
+
 ggplot(obs_predicted, aes(x = SW_predicted, y = observed)) + geom_point()
 
 obs_predicted <-
   obs_predicted %>% gather(type, val, observed, SW_predicted)
-ggplot(obs_predicted, aes(x = simple_date, y = val, color = type)) + geom_line()
 
+ggplot(obs_predicted, aes(x = simple_date, y = val, color = type)) + geom_line()
 
 swVWC$Control <- scale(swVWC$modelVWC) # standardize control SWC
 Control_mean <- mean(swVWC$modelVWC)
@@ -341,6 +351,9 @@ swVWC <-
   gather(Treatment, VWC, Control:Irrigation)
 
 swVWC$VWC_raw <- swVWC$VWC * Control_sd + Control_mean
+
+saveRDS(swVWC, daily_swVWC_treatment_outfile)
+
 
 pdf(
   'figures/modeled_soilwat_soil_moisture_example.pdf',
@@ -370,5 +383,3 @@ print(
     )))
 )
 
-
-saveRDS(swVWC, 'data/temp_data/daily_swVWC_treatments.RDS')

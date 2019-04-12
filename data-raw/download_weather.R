@@ -7,8 +7,8 @@ data_readme_url <- "https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/readme.txt"
 
 # output -------------------------------------------------- #
 
-data_file <- 'data-raw/usses_climate.txt'
-readme_file <- 'data-raw/climate_readme.txt'
+data_file <- 'data-raw/usses_weather.txt'
+readme_file <- 'data-raw/weather_readme.txt'
 
 #  -------------------------------------------------- #
 

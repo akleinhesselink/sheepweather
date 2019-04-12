@@ -1,13 +1,14 @@
 rm(list = ls())
 library(tidyverse)
+library(usethis)
 
 # input --------------------------------------------------- #
 
-weather <- as.list( read_lines('data-raw/usses_climate.txt') )
+weather <- as.list( read_lines('data-raw/usses_weather.txt') )
 
 # output -------------------------------------------------- #
 
-outfile <- 'temp_data/weather.rda'
+outfile <- 'temp_data/weather.RDS'
 
 # -------------------------------------------------- #
 
@@ -48,5 +49,4 @@ weather <-
   filter( ! is.na(date)) %>%
   select( date, ELEMENT, value)
 
-# save output to data folder
-save(weather, file = outfile)
+saveRDS(weather, file = outfile)

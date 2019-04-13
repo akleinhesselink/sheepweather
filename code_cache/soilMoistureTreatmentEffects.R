@@ -24,7 +24,6 @@ quads <- read_csv('data-raw/quad_info.csv')
 
 # output ---------------------------------------------------- #
 
-
 daily_swVWC_treatment_outfile <- 'data/temp_data/daily_swVWC_treatments.RDS'
 
 # --------------------------------------------------------------------------------------#

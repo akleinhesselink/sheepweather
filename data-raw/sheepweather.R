@@ -1,7 +1,14 @@
 rm(list = ls())
 
+#
+# run this file to save all the data to the data folder
+# will run the process data script which takes several
+# minutes
+
 library(tidyverse)
 library(usethis)
+
+source('data-raw/process_data.R')  # takes several minutes
 
 usses_decagon <- readRDS('temp_data/decagon_data_corrected_values.RDS')
 use_data(usses_decagon, overwrite = T)

@@ -195,3 +195,15 @@ new <- readRDS('temp_data/weather.RDS')
 old <- readRDS('temp_data/test_data/weather.RDS')
 
 all.equal(old, new) # They match!
+
+# 8. Test that exports to soilwat match
+rm(list = ls())
+
+new_weath_files <- dir('temp_data/for_soilwat/weather_files/', full.names = T)
+new <- do.call(rbind, lapply(new_weath_files, read_tsv, skip = 2, col_names = F) )
+
+old_weath_files <- dir('temp_data/test_data/for_soilwat/weather_files/', full.names = T)
+old <- do.call(rbind, lapply(old_weath_files, read_tsv, skip = 2, col_names = F) )
+
+all.equal(old, new) # They match !
+

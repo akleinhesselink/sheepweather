@@ -2,6 +2,7 @@
 
 rm(list = ls())
 library( tidyverse )
+library(lubridate)
 
 # input ---------------------------------------------------- #
 
@@ -17,8 +18,8 @@ weather <-
   weather %>%
   ungroup() %>%
   spread(ELEMENT, value ) %>%
-  mutate( year = as.numeric (strftime(date, '%Y'))) %>%
-  mutate( DOY = as.numeric(strftime(date, '%j'))) %>%
+  mutate( year = year(date) ) %>%
+  mutate( DOY =  yday(date) ) %>%
   mutate( PPT = PRCP/10 ) # convert to cm
 
 day_grid <- expand.grid( DOY = 1:365,

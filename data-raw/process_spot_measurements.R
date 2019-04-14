@@ -41,7 +41,7 @@ df <-
   df %>%
   left_join(q_info, by = c('plot' = 'QuadName'))
 
-df$date <- as.POSIXct(df$date, tz = 'MST')
+df$date <- ymd(df$date)
 
 df <-
   df %>%

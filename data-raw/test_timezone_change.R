@@ -178,20 +178,18 @@ new <- new %>%
 
 all.equal(data.frame(old), data.frame(new)) ## ThEY match !!!!
 
-# test 6
-
-
-load('data/usses_spot_sm.rda')
-old_data <- readRDS('temp_data/test_data/usses_spot.RDS')
-
-identical(usses_spot_sm, old_data)
-
-# Test 3
-load('data/usses_weather.rda')
-old_data <- readRDS('temp_data/test_data/usses_weather.RDS')
-
-identical(usses_weather, old_data)
-
-
 # 6. Test spot values
 
+rm(list = ls())
+new <- readRDS('temp_data/spring_spot_measurements.RDS')
+old <- readRDS('temp_data/test_data/spring_spot_measurements.RDS')
+identical(new, old)
+all.equal(data.frame(new), data.frame( old) )
+tz( old$date ) <- 'UTC'
+old$date <- ymd( old$date )
+all.equal(data.frame(new), data.frame( old) )  ### They MATCH!
+
+# 7. Test that weather matches
+rm(list = ls())
+new <- readRDS('temp_data/weather.RDS')
+old <- readRDS('temp_data/test_data')

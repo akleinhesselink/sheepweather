@@ -192,4 +192,6 @@ all.equal(data.frame(new), data.frame( old) )  ### They MATCH!
 # 7. Test that weather matches
 rm(list = ls())
 new <- readRDS('temp_data/weather.RDS')
-old <- readRDS('temp_data/test_data')
+old <- readRDS('temp_data/test_data/weather.RDS')
+
+all.equal(old, new) # They match!

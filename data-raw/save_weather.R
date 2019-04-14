@@ -1,7 +1,6 @@
 rm(list = ls())
 library(tidyverse)
-library(usethis)
-
+library(lubridate)
 # input --------------------------------------------------- #
 
 weather <- as.list( read_lines('data-raw/usses_weather.txt') )
@@ -45,7 +44,7 @@ weather <-
 weather <-
   weather %>%
   mutate( date = paste( YEAR, MONTH, day, sep = '-')) %>%
-  mutate( date = as.Date( date, '%Y-%m-%d')) %>%
+  mutate( date = ymd( date )) %>%
   filter( ! is.na(date)) %>%
   select( date, ELEMENT, value)
 

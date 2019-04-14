@@ -2,8 +2,7 @@ rm(list = ls())
 
 library(tidyverse)
 library(zoo) # for rollapply
-library(usethis)
-
+library(lubridate)
 #
 # input ---------------------------------------------------- #
 
@@ -43,7 +42,7 @@ corrected <-
   df %>%
   group_by(plot, position, measure ) %>%
   arrange( new_date) %>%
-  mutate( Tdiff = as.numeric( new_date - lag(new_date), tz = 'MST' ) ) %>%
+  mutate( Tdiff = as.numeric( new_date - lag(new_date) ) ) %>%
   mutate( frame_length = n() ) %>%
   filter( frame_length > 100 ) %>%
   mutate( rllm = rollapply( value, 100, mean, na.rm = TRUE, fill = NA, align = 'center')) %>%
@@ -75,20 +74,20 @@ corrected <-
 corrected$bad_window <- as.numeric(corrected$bad_window)
 
 corrected <- corrected %>%
-  mutate(bad_window = ifelse( plot == 'X7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > strptime( '2015-07-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > ymd( '2015-07-01'), 1, bad_window ) ) %>%
   mutate(bad_window = ifelse( plot == 'X1' & position == '5W' & measure == 'VWC' , 1, bad_window)) %>%
-  mutate(bad_window = ifelse( plot == 'X1_2_C' & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 'X15' & position == '5E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 'X15' & position == 'air' & measure == 'C' & new_date > strptime( '2016-02-01', format = '%Y-%m-%d')  & new_date < strptime( '2016-05-10', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 'X2' & position == '25E' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d'), 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 'X8' & position == 'air' & measure == 'C' & new_date > strptime( '2016-03-01', format = '%Y-%m-%d') & new_date < strptime( '2016-05-10', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
-  mutate(bad_window = ifelse( plot == 'X7' & position == '5W' & measure == 'VWC' & new_date > strptime( '2016-01-01', format = '%Y-%m-%d') , 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X1_2_C' & position == '5E' & measure == 'VWC' & new_date > ymd( '2016-01-01'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X15' & position == '5E' & measure == 'VWC' & new_date > ymd( '2016-01-01')  & new_date < ymd( '2016-05-10'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X15' & position == 'air' & measure == 'C' & new_date > ymd( '2016-02-01')  & new_date < ymd( '2016-05-10'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X2' & position == '25E' & measure == 'VWC' & new_date > ymd( '2016-01-01'), 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X8' & position == 'air' & measure == 'C' & new_date > ymd( '2016-03-01') & new_date < ymd( '2016-05-10') , 1, bad_window ) ) %>%
+  mutate(bad_window = ifelse( plot == 'X7' & position == '5W' & measure == 'VWC' & new_date > ymd( '2016-01-01') , 1, bad_window ) ) %>%
   mutate(bad_window = ifelse( plot == 'X7_8_C' & position == '5W' & measure == 'VWC' & stat == 'value' & v < -0.01 , 1, bad_window )) %>%
   mutate(bad_window = ifelse( plot == 'X7_8_C' &
                                 position == 'air' &
                                 measure == 'C' &
-                                new_date > strptime( '2013-03-01', format = '%Y-%m-%d') &
-                                new_date < strptime( '2013-09-01', format = '%Y-%m-%d'), 1, bad_window ))
+                                new_date > ymd( '2013-03-01') &
+                                new_date < ymd( '2013-09-01'), 1, bad_window ))
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 

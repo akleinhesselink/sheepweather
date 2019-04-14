@@ -7,7 +7,7 @@
 rm(list = ls())
 
 library(tidyverse)
-
+library(lubridate)
 # input ---------------------------------------------------- #
 
 q_info <- read.csv('data-raw/quad_info.csv')
@@ -51,7 +51,7 @@ assign_NAs <- function( x ) {
 
 convert_time <- function(x) {
 
-  return( strptime(x = x$Time, format = '%m/%d/%y %I:%M %p', tz = 'MST') )
+  return( mdy_hm(x = x$Time) )
 
 }
 
@@ -60,7 +60,7 @@ make_date <- function(x) {
 
   x$date <- convert_time( x )
 
-  x$date <- as.POSIXct(x$date, format = '%Y-%m-%d %H:%m:%s' )
+  #x$date <- as.POSIXct(x$date, format = '%Y-%m-%d %H:%m:%s' )
 
   return(x)
 }
@@ -100,8 +100,6 @@ for (i in 1:length(folders)) {
   f <- c(f, f_raw, f2_raw, f2)
 
   m_date <- file.mtime(f)
-
-  attributes(m_date)$tzone <- 'MST'
 
   logger <- str_extract(basename(f), pattern = '(^E[ML][0-9]+)|(^[0-9]+(_[0-9]+_C)?)')
 
@@ -172,6 +170,14 @@ port_depth$port <- str_replace(port_depth$port, pattern = '\\.', replacement = '
 port_depth$plot <- paste0( 'X', port_depth$plot)
 
 df <- merge( df, port_depth, by = c('plot', 'period', 'port') )
+
+df$f <- str_extract( as.character(df$f), '[^/]+/[^/]+$') # just use final folders in name
+df$f <- factor(df$f)
+
+df$date_started <- as.character ( df$date_started )
+df$date_started <- ymd( df$date_started , tz = 'UTC')
+df$date_uploaded <- as.character( df$date_uploaded )
+df$date_uploaded <- ymd( df$date_uploaded, tz = 'UTC')
 
 saveRDS(df , outfile )
 

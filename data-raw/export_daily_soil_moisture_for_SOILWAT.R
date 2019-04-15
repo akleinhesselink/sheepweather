@@ -2,6 +2,7 @@
 
 rm(list = ls () )
 library(tidyverse)
+library(lubridate)
 
 # input ---------------------------------------------------- #
 
@@ -17,15 +18,15 @@ sms_label_file <- 'temp_data/for_soilwat/FieldSensors_MappedTo_SoilWatLayers.csv
 port_info_file <- 'temp_data/for_soilwat/port_info.csv'
 
 # ---------------------------------------------------------------------------------------
-
 soil_export <-
   soil %>%
+  rename( 'date' = simple_date) %>%
   ungroup() %>%
   filter( measure == 'VWC',
           stat == 'raw',
           Treatment == 'Control') %>%
   mutate( depth = str_extract( depth, pattern = '[0-9]+' )) %>%
-  select(Treatment, plot, port, position, depth, datetime, v)
+  select(date, plot, position, depth,  v)
 
 port_labels <- data.frame( position = rev( unique( soil_export$position) ),
                            SMS_label = paste0('VWC_L', 1:4), `depth (cm)` = c(5,5, 25,25 ) )
@@ -34,42 +35,24 @@ sms_labels <- data.frame(Label = c('USSES_11_12_C', 'USSES_1_2_C', 'USSES_15_16_
                          SCANInstallation_Number = 1 ,
                          SMS_Number = 2, SMS1 = NA, SMS2 = NA, SMS3 = NA, SMS4 = NA )
 
-temp <-
+temp_avg <-
   soil_export %>%
   left_join(port_labels, by = 'position') %>%
-  ungroup()
-
-temp <-
-  temp %>%
-  select( plot, Treatment, datetime, v, SMS_label )
-
-temp_avg <-
-  temp %>%
-  mutate( old_date = datetime) %>%
-  mutate( date = as.Date( old_date, '%Y-%m-%d', tz = 'MST'),
-          DOY  = strftime( old_date, '%j'),
-          year = strftime( old_date , '%Y') ) %>%
-  group_by( plot, date, Treatment, year, DOY, SMS_label) %>%
+  ungroup() %>%
+  select( plot, date, SMS_label, v) %>%
+  group_by( date, plot, SMS_label) %>%
   summarise( VWC = mean(v, na.rm = TRUE), n = n()) %>%
   ungroup() %>%
-  spread(  SMS_label, VWC) %>%
-  rename( Date = date)
+  spread(  SMS_label, VWC)
 
-all_dates <-
-  data.frame( date = seq.POSIXt(strptime( '2012-01-01', '%Y-%m-%d', tz = 'MST'),
-                                strptime( '2016-12-31', '%Y-%m-%d', tz = 'MST'), by = 24*3600) )
-
-all_dates <-
-  expand.grid( plot = unique( temp_avg$plot),
-                          Date = as.Date( all_dates$date, tz = 'MST'))
-
-temp_avg <-
-  left_join(all_dates, temp_avg , by = c('plot', 'Date')) %>%
-  mutate( doy = as.numeric( strftime( Date, '%j', 'MST') ))
+all_dates <- expand.grid( date = seq( ymd( '2012-01-01'), ymd('2016-12-31'), by = 1),
+             plot = unique(temp_avg$plot))
 
 out_list <-
-  temp_avg %>%
-  dplyr::select(plot, Date, doy, starts_with( 'VWC'))
+  all_dates %>%
+  left_join(temp_avg , by = c('plot', 'date')) %>%
+  mutate( YEAR = year(date), DOY = yday(date)) %>%
+  select(plot, date, YEAR, DOY, starts_with('VWC'))
 
 out_list <- split( out_list, out_list$plot )
 

@@ -207,3 +207,26 @@ old <- do.call(rbind, lapply(old_weath_files, read_tsv, skip = 2, col_names = F)
 
 all.equal(old, new) # They match !
 
+# 9. Test that soil moisture exports for soilwat match
+rm(list = ls())
+
+old <- read_csv('temp_data/test_data/for_soilwat/USSES_X1_2_C_SoilWater.csv')
+new <- read_csv('temp_data/for_soilwat/USSES_X1_2_C_SoilWater.csv')
+
+old$date <- old$Date
+
+old <- data.frame( old %>% select( plot, date, starts_with('VWC')))
+new <- data.frame( new %>% select( plot, date, starts_with('VWC')))
+
+all.equal(old, new) # some difference due to timezone errors
+
+old <- old %>%
+  gather( layer, value , starts_with('VWC'))
+
+new <- new %>%
+  gather( layer, value, starts_with('VWC'))
+
+test <- left_join(old, new, by = c('plot', 'date', 'layer'))
+
+plot( test$value.x , test$value.y) # probably slight errors due to what day a reading is aggregated to
+

@@ -116,8 +116,6 @@ old$hour <- hour(old$new_date)
 old$year <- year(old$new_date)
 old$month <- month(old$new_date)
 
-names(season)
-
 old <-
   old %>%
   select( -season, -season_label, -precip_seasons, -lag_year ) %>%
@@ -133,7 +131,8 @@ old$change <- as.numeric(old$change)
 old <- old %>% arrange(plot, period, port, id, new_date, measure, type, position, depth ) %>% data.frame()
 new <- new %>% arrange(plot, period, port, id, new_date, measure, type, position, depth ) %>% data.frame()
 
-all.equal(new, old)  # they match !
+
+all.equal(new, old)  # they match (except for modified date which shouldn't)
 
 # 5. Test correct_readings
 rm(list = ls())

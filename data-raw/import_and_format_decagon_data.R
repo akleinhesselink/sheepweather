@@ -60,8 +60,6 @@ make_date <- function(x) {
 
   x$date <- convert_time( x )
 
-  #x$date <- as.POSIXct(x$date, format = '%Y-%m-%d %H:%m:%s' )
-
   return(x)
 }
 

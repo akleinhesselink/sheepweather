@@ -16,8 +16,3 @@ source('data-raw/export_daily_weather_for_SOILWAT.R')
 # read daily soilwat data and save to csv file
 # NOTE requires Rsoilwat31 package
 source('data-raw/ExtractData_3Runs.R') # generate daily_VWC.csv
-
-
-# Move to analysis project
-# source('make_rainfall.R')
-# source('merge_decagon_with_climate_station_data.R')

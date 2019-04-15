@@ -159,7 +159,8 @@ old <-
           good_date == 1,
           !is.na(v)) %>%
   rename( 'datetime' = new_date) %>%
-  select(simple_date, datetime, id, plot, PrecipGroup, Treatment, port, position, depth, measure, stat, v)
+  rename( 'date' = simple_date) %>%
+  select(date, datetime, id, plot, PrecipGroup, Treatment, port, position, depth, measure, stat, v)
 
 names(new)
 names(old)
@@ -170,10 +171,10 @@ dim(old)
 tz( old$datetime ) <- 'UTC'
 
 old <- old %>%
-  arrange( datetime, simple_date, id, plot, PrecipGroup, Treatment, port, position, depth, measure)
+  arrange( datetime, date, id, plot, PrecipGroup, Treatment, port, position, depth, measure)
 
 new <- new %>%
-  arrange( datetime, simple_date, id, plot, PrecipGroup, Treatment, port, position, depth, measure)
+  arrange( datetime, date, id, plot, PrecipGroup, Treatment, port, position, depth, measure)
 
 all.equal(data.frame(old), data.frame(new)) ## ThEY match !!!!
 

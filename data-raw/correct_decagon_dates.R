@@ -84,7 +84,7 @@ out %>%
 out <-
   out %>%
   ungroup() %>%
-  mutate( simple_date = date(new_date),
+  mutate( date = date(new_date),
           hour = hour( new_date ),
           year = year( new_date ),
           month = month( new_date ))

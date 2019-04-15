@@ -8,8 +8,8 @@
 #'
 #' @format A data frame with 1022240 rows and 12 variables:
 #' \describe{
-#'   \item{simple_date}{Date in \%Y-\%m-\%d format}
-#'   \item{datetime}{POSIXct datetime in \%Y-\%m-\%d \%H:\%M:\%s Mountain Time}
+#'   \item{date}{Date in \%Y-\%m-\%d format}
+#'   \item{datetime}{POSIXct datetime in \%Y-\%m-\%d \%H:\%M:\%s local time}
 #'   \item{id}{decagon datalogger id}
 #'   \item{plot}{unique plot id, matches QuadName in quad_info }
 #'   \item{PrecipGroup}{plot group, each plot group contains drought, irrigation and ambient plots}
@@ -19,7 +19,7 @@
 #'   \item{depth}{soil depth of decagon probe}
 #'   \item{measure}{variable type, C (temperature in degree C), volumetric water content (VWC)}
 #'   \item{stat}{factor giving type, all should be raw values }
-#'   \item{v}{probe value, depends on measurement type above }
+#'   \item{v}{measured value, depends on measurement type above }
 #' }
 "usses_decagon"
 

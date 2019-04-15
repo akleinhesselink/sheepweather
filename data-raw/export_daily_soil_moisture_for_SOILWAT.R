@@ -20,7 +20,6 @@ port_info_file <- 'temp_data/for_soilwat/port_info.csv'
 # ---------------------------------------------------------------------------------------
 soil_export <-
   soil %>%
-  rename( 'date' = simple_date) %>%
   ungroup() %>%
   filter( measure == 'VWC',
           stat == 'raw',

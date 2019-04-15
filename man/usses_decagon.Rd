@@ -6,8 +6,8 @@
 \title{Daily soil moisture data from the US Sheep Experiment Station}
 \format{A data frame with 1022240 rows and 12 variables:
 \describe{
-  \item{simple_date}{Date in \%Y-\%m-\%d format}
-  \item{datetime}{POSIXct datetime in \%Y-\%m-\%d \%H:\%M:\%s Mountain Time}
+  \item{date}{Date in \%Y-\%m-\%d format}
+  \item{datetime}{POSIXct datetime in \%Y-\%m-\%d \%H:\%M:\%s local time}
   \item{id}{decagon datalogger id}
   \item{plot}{unique plot id, matches QuadName in quad_info }
   \item{PrecipGroup}{plot group, each plot group contains drought, irrigation and ambient plots}

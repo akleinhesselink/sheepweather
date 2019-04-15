@@ -107,7 +107,7 @@ corrected <-
           good_date == 1,
           !is.na(v)) %>%
   rename( 'datetime' = new_date) %>%
-  select(simple_date, datetime, id, plot, PrecipGroup, Treatment, port, position, depth, measure, stat, v)
+  select(date, datetime, id, plot, PrecipGroup, Treatment, port, position, depth, measure, stat, v)
 
 
 saveRDS(corrected, outfile)

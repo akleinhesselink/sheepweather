@@ -4,8 +4,6 @@ library(lubridate)
 library(tidyverse)
 
 ibutton <- readRDS('temp_data/ibutton.RDS')
-quads   <- read_csv('data-raw/quad_info.csv')
-seasons <- read_csv('data-raw/season_table.csv')
 
 ibutton <-
   ibutton %>%

@@ -98,3 +98,24 @@
 #' @source \url{https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/all/USC00102707.dly}
 "usses_weather"
 
+
+#' Daily ibutton temperature data from rainfall shelters
+#'
+#' A dataset containing the date, the daily max, min and mean
+#' mean temperatures recorded by iButtons placed 50 cm above ground
+#' level at the north end of precipitation and irrigation plots.
+#' iButtons recorded data every two hours and this was aggregated by
+#' day to daily tmax, tmin and tmean ((tmax+tmin)/2). iButtons were
+#' housed in short sections of pvc pipe to reduce effects of
+#' direct sun exposure.
+#'
+#' @format A data frame with 6591 rows and 5 variables:
+#' \describe{
+#'   \item{date}{date in \%Y-\%m-\%d format}
+#'   \item{plot}{experimental plot match with usses_quads}
+#'   \item{n}{ number of samples recorded on a given date}
+#'   \item{stat}{daily temperature measure, TMAX, TMIN, TMEAN}
+#'   \item{ibutton}{recorded value in degrees C}
+#' }
+"usses_ibutton"
+

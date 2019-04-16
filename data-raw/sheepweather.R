@@ -20,8 +20,9 @@ use_data(usses_weather, overwrite = T)
 
 rm(list = ls())
 
+usses_ibutton <- readRDS('temp_data/daily_ibutton.RDS')
 usses_spot_sm <- readRDS('temp_data/spring_spot_measurements.RDS')
 usses_quads <- read_csv('data-raw/quad_info.csv')
 usses_soilwat <- read_csv('temp_data/daily_VWC.csv')
 
-use_data(usses_spot_sm, usses_quads, usses_soilwat, overwrite = T)
+use_data(usses_spot_sm, usses_quads, usses_soilwat, usses_ibutton, overwrite = T)

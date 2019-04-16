@@ -3,7 +3,7 @@ library(tidyverse)
 library(lubridate)
 
 q_info <- read_csv('data-raw/quad_info.csv')
-folders <- list.dirs('data-raw/ibutton', recursive = FALSE , full.names = TRUE)
+folders <- list.dirs('data-raw/iButton', recursive = FALSE , full.names = TRUE)
 
 # outfile ----------------------------------------------------------- #
 
@@ -49,10 +49,9 @@ df <- do.call( rbind, data_list )  # bind the data lists from each folder
 
 df <-
   df %>%
-  mutate( QuadName = paste0('X', plot)) %>%
-  left_join(q_info, by = 'QuadName') %>%
-  mutate(start_date = ymd(start_date)) %>%
-  mutate(end_date = ymd(end_date))
+  filter( datetime > date(start_date) & datetime < date(end_date)) %>%
+  select( id, datetime, plot, Value) %>%
+  mutate( plot = paste0('X', plot))
 
 saveRDS(df, file = outfile)
 

@@ -59,7 +59,8 @@ daily_anoms <-
 
 library(lme4)
 library(emmeans)
-m1 <- lmer( data = daily_anoms, anom ~ Treatment + type + (1|plot) + (1|date) + (1|PrecipGroup))
+
+m1 <- lmer( data = daily_anoms, anom ~ Treatment + type + (1|plot) + (1|date))
 summary(m1)
 summary( m1 )
 
@@ -73,3 +74,21 @@ gg1 <- emmeans(m1, ~ Treatment ) %>%
 
 ggsave(gg1, filename = 'data-raw/shelter_temp_effect.png')
 
+
+m1 <- lm( data = daily_anoms, anom ~ Treatment + type )
+
+gg2 <- emmeans(m1, ~ Treatment ) %>%
+  data.frame() %>%
+  ggplot( aes(  x = Treatment , y = emmean, ymin = lower.CL, ymax = upper.CL )) +
+  geom_point(position = position_dodge(width = 0.2)) +
+  geom_errorbar(position = position_dodge(width = 0.2)) +
+  ylab( 'Daily Plot Tmean - Station Tmean deg. C') +
+  theme( axis.text.x = element_text(size = 14 ), axis.title.x = element_blank())
+
+myplot <- egg::ggarrange(gg1 + ylim(-1,1) + ggtitle('Random effects: (1|plot) + (1|date)'),
+               gg2 +
+                 theme(axis.title.y = element_blank()) +
+                 ylim(-1, 1) +
+                 ggtitle('No random effects'), nrow = 1)
+myplot
+ggsave(myplot, filename = 'data-raw/shelter_temp_effect.png', width = 8, height = 5)

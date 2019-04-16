@@ -212,15 +212,34 @@ old_weath_dir <-
   '~/Dropbox/projects/old_USSES_projects/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/weather_files'
 
 old_weath_files <- dir(old_weath_dir, full.names = T)
-old <- do.call(rbind, lapply(old_weath_files[-1], read_tsv, skip = 2, col_names = F))
+old_data <- lapply(old_weath_files, read_tsv, skip = 2, col_names = F)
+names( old_data )  <- 1925:2016
+old <- bind_rows(old_data)
 
-old_weath_files
-new_weath_files
-new <- do.call(rbind, lapply( new_weath_files[-1], read_tsv, skip = 2, col_names = F))
+new_data <- lapply( new_weath_files, read_tsv, skip = 2, col_names = F)
+new <- bind_rows(new_data)
+names(new_data) <- 1925:2016
+dim(new)
+dim(old)
 
-old_weath_files
-new_weath_files
-new_weath_files
+lapply( old_data, nrow) # old has an extra day!
+table( old_data$`2004`$X1 )
+old_data$`2004`[304:310, ] # counting 305th day twice!!!
+
+new_data$`2004`[304:310, ]
+lapply( new_data, nrow)
+
+lapply( new_data, function(x) any( table(x$X1) > 1))
+lapply( old_data, function(x) any( table(x$X1) > 1)) # some days get counted twice in old data !
+
+old$DOY <- old$X1
+new$DOY <- new$X1
+
+old %>%
+  group_by( DOY) %>% summarise( n())
+
+new %>%
+  group_by( DOY) %>% summarise( n())
 
 # 9. Test that soil moisture exports for soilwat match
 rm(list = ls())

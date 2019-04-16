@@ -17,7 +17,7 @@
   \item{depth}{soil depth of decagon probe}
   \item{measure}{variable type, C (temperature in degree C), volumetric water content (VWC)}
   \item{stat}{factor giving type, all should be raw values }
-  \item{v}{probe value, depends on measurement type above }
+  \item{v}{measured value, depends on measurement type above }
 }}
 \usage{
 usses_decagon

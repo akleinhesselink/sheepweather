@@ -42,7 +42,7 @@ station <-
   gather( stat, station, TMAX, TMIN, TMEAN)
 
 
-season_anoms <-
+daily_anoms <-
   station %>%
   left_join(
     bind_rows(
@@ -55,22 +55,21 @@ season_anoms <-
   mutate( month = month(date), year = year(date)) %>%
   left_join(quads, by = c('plot' = 'QuadName')) %>%
   left_join(seasons, by = 'month') %>%
-  select( month, plot, Treatment, type, year, season, date, anom) %>%
-  group_by( month, plot, Treatment, type, season ) %>%
-  filter( month %in% c(4:6) ) %>%
-  summarise( anom = mean(anom))
+  select( month, plot, Treatment, type, year, season, date, anom, PrecipGroup)
 
-m1 <- lm( data =  season_anoms, anom ~ Treatment + type )
-
+library(lme4)
+library(emmeans)
+m1 <- lmer( data = daily_anoms, anom ~ Treatment + type + (1|plot) + (1|date) + (1|PrecipGroup))
 summary(m1)
-
-m1 <- MASS::stepAIC(m1)
-
 summary( m1 )
 
-emmeans(m1, ~ Treatment ) %>%
+gg1 <- emmeans(m1, ~ Treatment ) %>%
   data.frame() %>%
-  ggplot( aes(  x = Treatment , y = emmean, ymin = lower.CL, ymax = upper.CL )) +
+  ggplot( aes(  x = Treatment , y = emmean, ymin = asymp.LCL, ymax = asymp.UCL )) +
   geom_point(position = position_dodge(width = 0.2)) +
-  geom_errorbar(position = position_dodge(width = 0.2))
+  geom_errorbar(position = position_dodge(width = 0.2)) +
+  ylab( 'Daily Plot Tmean - Station Tmean deg. C') +
+  theme( axis.text.x = element_text(size = 14 ), axis.title.x = element_blank())
+
+ggsave(gg1, filename = 'data-raw/shelter_temp_effect.png')
 

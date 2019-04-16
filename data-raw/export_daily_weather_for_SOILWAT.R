@@ -19,6 +19,7 @@ weather <-
   ungroup() %>%
   spread(ELEMENT, value ) %>%
   mutate( year = year(date) ) %>%
+  filter( year < 2017) %>%
   mutate( DOY =  yday(date) ) %>%
   mutate( PPT = PRCP/10 ) # convert to cm
 

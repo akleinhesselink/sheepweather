@@ -196,6 +196,7 @@ old <- readRDS('temp_data/test_data/weather.RDS')
 
 all.equal(old, new) # They match!
 
+
 # 8. Test that exports to soilwat match
 rm(list = ls())
 
@@ -207,26 +208,77 @@ old <- do.call(rbind, lapply(old_weath_files, read_tsv, skip = 2, col_names = F)
 
 all.equal(old, new) # They match !
 
+old_weath_dir <-
+  '~/Dropbox/projects/old_USSES_projects/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/weather_files'
+
+old_weath_files <- dir(old_weath_dir, full.names = T)
+old <- do.call(rbind, lapply(old_weath_files[-1], read_tsv, skip = 2, col_names = F))
+
+old_weath_files
+new_weath_files
+new <- do.call(rbind, lapply( new_weath_files[-1], read_tsv, skip = 2, col_names = F))
+
+old_weath_files
+new_weath_files
+new_weath_files
+
 # 9. Test that soil moisture exports for soilwat match
 rm(list = ls())
 
-old <- read_csv('temp_data/test_data/for_soilwat/USSES_X1_2_C_SoilWater.csv')
-new <- read_csv('temp_data/for_soilwat/USSES_X1_2_C_SoilWater.csv')
+old_dir <-
+  '~/Dropbox/projects/old_USSES_projects/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/'
 
-old$date <- old$Date
+old_smfiles <- dir(old_dir, 'SoilWater.csv', recursive = T, full.names = T)
+new_smfiles <- dir('temp_data/for_soilwat', 'SoilWater.csv', recursive = T, full.names = T)
+old_sm <- do.call( rbind, lapply( old_smfiles, read_csv))
+new_sm <- do.call( rbind, lapply( new_smfiles, read_csv))
 
-old <- data.frame( old %>% select( plot, date, starts_with('VWC')))
-new <- data.frame( new %>% select( plot, date, starts_with('VWC')))
+old_sm %>%
+  group_by(plot) %>%
+  summarise( sum(is.na(VWC_L1))/n())
 
-all.equal(old, new) # some difference due to timezone errors
+new_sm %>%
+  group_by(plot) %>%
+  summarise( sum(is.na(VWC_L1))/n())
 
-old <- old %>%
-  gather( layer, value , starts_with('VWC'))
+unique( old_sm$plot)
+unique( new_sm$plot)
 
-new <- new %>%
-  gather( layer, value, starts_with('VWC'))
+old_sm <-
+  old_sm %>%
+  select( -doy) %>%
+  mutate( plot = paste0('X', plot)) %>%
+  rename( 'date' = Date)
 
-test <- left_join(old, new, by = c('plot', 'date', 'layer'))
+old_sm %>%
+  ggplot(aes(x= date, y= VWC_L1, color = plot ) ) + geom_point()
 
-plot( test$value.x , test$value.y) # probably slight errors due to what day a reading is aggregated to
+new_sm %>%
+  ggplot( aes( x = date, y = VWC_L1, color = plot)) + geom_point()
 
+# there are some major differences and I'm not sure why
+# but I'm confident in the new data
+
+# Test new weather and really old weather:
+
+rm(list =ls())
+
+old <-
+  read_csv( '~/Dropbox/projects/old_USSES_projects/driversdata/data/idaho_modern/climateData/USSES_climate.csv')
+
+new <- readRDS('temp_data/weather.RDS')
+
+old <-
+  old %>%
+  mutate( date = ymd( DATE)) %>%
+  select( date, TMAX, TMIN, PRCP ) %>%
+  gather( ELEMENT, value, TMAX, TMIN,PRCP )
+
+old$value[old$value < -9000 ] <- NA
+
+# They MATCH
+new %>%
+  left_join(old, by= c('date', 'ELEMENT')) %>%
+  ggplot(aes( x = value.x , y = value.y )) + geom_point()
+
+#

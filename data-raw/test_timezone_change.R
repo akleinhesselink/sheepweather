@@ -6,7 +6,7 @@ library(tidyverse)
 library(lubridate)
 
 # Test 1.  import_and_format_decagon_data
-old <- readRDS('temp_data/test_data/decagon_data.RDS')
+old <- readRDS('test_data/decagon_data.RDS')
 new <- readRDS('temp_data/decagon_data.RDS')
 
 dim(new)
@@ -67,7 +67,7 @@ all.equal( old %>% arrange(reading) ,
 rm(list = ls())
 
 new <- read.csv('temp_data/check_dates.csv')
-old <- read.csv('temp_data/test_data/check_dates.csv')
+old <- read.csv('test_data/check_dates.csv')
 
 dim(new)
 dim(old)
@@ -81,7 +81,7 @@ all.equal(old, new)
 rm(list = ls())
 
 new <- read_csv('data-raw/check_dates_modified.csv')
-old <- read_csv('temp_data/test_data/check_dates_modified.csv')
+old <- read_csv('test_data/check_dates_modified.csv')
 
 all.equal(old, new)
 
@@ -92,7 +92,7 @@ all.equal(old, new) # They match!
 # Test 4 check correct_decagon_dates
 rm(list = ls())
 new <- readRDS('temp_data/decagon_data_corrected_dates.RDS')
-old <- readRDS('temp_data/test_data/decagon_data_corrected_dates.RDS')
+old <- readRDS('test_data/decagon_data_corrected_dates.RDS')
 
 dim(new)
 dim(old)
@@ -138,7 +138,7 @@ all.equal(new, old)  # they match (except for modified date which shouldn't)
 rm(list = ls())
 
 new <- readRDS('temp_data/decagon_data_corrected_values.RDS')
-old <- readRDS('temp_data/test_data/decagon_data_corrected_values.RDS')
+old <- readRDS('test_data/decagon_data_corrected_values.RDS')
 
 old$plot <- paste0( 'X', old$plot )
 
@@ -182,7 +182,7 @@ all.equal(data.frame(old), data.frame(new)) ## ThEY match !!!!
 
 rm(list = ls())
 new <- readRDS('temp_data/spring_spot_measurements.RDS')
-old <- readRDS('temp_data/test_data/spring_spot_measurements.RDS')
+old <- readRDS('test_data/spring_spot_measurements.RDS')
 identical(new, old)
 all.equal(data.frame(new), data.frame( old) )
 tz( old$date ) <- 'UTC'
@@ -192,7 +192,7 @@ all.equal(data.frame(new), data.frame( old) )  ### They MATCH!
 # 7. Test that weather matches
 rm(list = ls())
 new <- readRDS('temp_data/weather.RDS')
-old <- readRDS('temp_data/test_data/weather.RDS')
+old <- readRDS('test_data/weather.RDS')
 
 all.equal(old, new) # They match!
 
@@ -203,7 +203,7 @@ rm(list = ls())
 new_weath_files <- dir('temp_data/for_soilwat/weather_files/', full.names = T)
 new <- do.call(rbind, lapply(new_weath_files, read_tsv, skip = 2, col_names = F) )
 
-old_weath_files <- dir('temp_data/test_data/for_soilwat/weather_files/', full.names = T)
+old_weath_files <- dir('test_data/for_soilwat/weather_files/', full.names = T)
 old <- do.call(rbind, lapply(old_weath_files, read_tsv, skip = 2, col_names = F) )
 
 all.equal(old, new) # They match !

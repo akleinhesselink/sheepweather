@@ -3,7 +3,7 @@ library(tidyverse)
 library(lubridate)
 
 q_info <- read_csv('data-raw/quad_info.csv')
-folders <- list.dirs('data-raw/iButton', recursive = FALSE , full.names = TRUE)
+folders <- list.dirs('data-raw/iButton_data', recursive = FALSE , full.names = TRUE)
 
 # outfile ----------------------------------------------------------- #
 

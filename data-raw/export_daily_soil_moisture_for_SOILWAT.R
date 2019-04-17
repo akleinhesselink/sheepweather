@@ -9,6 +9,8 @@ library(lubridate)
 soil <- readRDS('temp_data/decagon_data_corrected_values.RDS')
   # comes from the correct decagon readings script
 
+texture_file <- 'data-raw/decagon/soil_texture_summary.csv'
+density_file <- 'data-raw/soil_density.csv'
 # output ---------------------------------------------------- #
 
 output_dir <- 'temp_data/for_soilwat'
@@ -93,3 +95,5 @@ for( i in 1:length(out_list) ) {
 write.csv( sms_labels, sms_label_file, row.names = FALSE)
 write.table( port_labels, port_info_file, sep = ',', row.names = FALSE)
 
+file.copy(texture_file, file.path('temp_data/for_soilwat/', basename(texture_file)))
+file.copy(density_file, file.path('temp_data/for_soilwat/', basename(density_file)))

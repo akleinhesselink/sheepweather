@@ -1,0 +1,2 @@
+"Label","site_id","WeatherFolder","X_WGS84","Y_WGS84","ELEV_m","Include_YN","dailyweather_source","Include_YN_DailyWeather","ClimateNormals_source","Include_YN_ClimateNormalSources"
+"USSES",1,"USSES_weather_files",-112.2002,44.24411,1672,1,"LookupWeatherFolder",1,"ClimateNormals_NCDC2005_USA",1

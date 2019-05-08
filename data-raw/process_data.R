@@ -14,8 +14,9 @@ source('data-raw/export_daily_soil_moisture_for_SOILWAT.R')
 source('data-raw/export_daily_weather_for_SOILWAT.R')
 
 # read daily soilwat data and save to csv file
-# NOTE requires Rsoilwat31 package
-source('data-raw/ExtractData_3Runs.R') # generate daily_VWC.csv
+# NOTE requires rSoilwat2 package
+
+source('data-raw/extract_soilwat.R') # generate daily_VWC.csv
 
 
 source('data-raw/process_ibutton_data.R')   # read in and clean up

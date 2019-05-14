@@ -7,6 +7,10 @@ rm(list = ls())
 
 library(tidyverse)
 library(usethis)
+library(devtools)
+library(zoo)
+library(rSOILWAT2)
+library(lubridate)
 
 source('data-raw/process_data.R')  # takes several minutes
 
